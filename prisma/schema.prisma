@@ -23,6 +23,7 @@ model User {
   updatedAt     DateTime
   sessions      Session[]
   accounts      Account[]
+  orders        Order[]
 
   @@unique([email])
   @@map("user")
@@ -71,4 +72,47 @@ model Verification {
   updatedAt  DateTime?
 
   @@map("verification")
+}
+
+model Movie {
+  id String @id @default(cuid())
+  title String
+  price Int
+  releaseDate DateTime
+  imageUrl String
+  stock Int
+  runtime String
+  createdAt DateTime @default(now())
+  updatedAt DateTime?
+
+  orderItem OrderItem[]
+}
+
+model Genre {
+  id String @id @default(cuid())
+  name String
+  description String
+  createdAt DateTime @default(now())
+  updatedAt DateTime?
+}
+
+model Order {
+  id String @id @default(cuid())
+  userId String
+  totalAmount Int
+  status String
+  orderDate DateTime
+  user User @relation(fields: [userId], references: [id])
+
+  orderItem OrderItem[]
+}
+
+model OrderItem {
+  id String @id @default(cuid())
+  orderId String
+  movieId String
+  quantity Int
+  priceAtPurchase Int
+  order Order @relation(fields: [orderId], references: [id])
+  movie Movie @relation(fields: [movieId], references: [id])
 }
